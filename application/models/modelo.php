@@ -1,6 +1,6 @@
 <?php 
 require_once (ROOT ."/application/models/factory/DataSource.php");
-require_once (ROOT ."/application/bean/Usuario.php");
+require_once (ROOT ."/application/models/dto/Usuarios.php");
 class Modelo {
 
 	private $conexionDB;
@@ -39,37 +39,7 @@ class Modelo {
         
         //----------------------------------------
         
-        public function getCodigo($campo) {
-            $arrayReturn = array();
-            $result = $this->conexionDB->prepare("SELECT id,valor FROM `tb_codigos` WHERE estado = 1 AND campo = ?");
-            $result->bind_param('s', $campo);
-            $result->execute();
-            $result->bind_result($id,$valor);
-            while ( $result->fetch() ){
-                $arrayReturn[] = $db = array(
-                    "id" => $id,
-                    "valor" => $valor
-                );
-            }
-            $result->close();
-            return $arrayReturn;
-	}   
-        
-         public function getRegion() {
-            $arrayReturn = array();
-            $sql = "SELECT id_region,region FROM regiones ";
-            $query = sqlsrv_query( $this->conexionDB, $sql);
-                while($result = sqlsrv_fetch_array($query, SQLSRV_FETCH_ASSOC))
-            {
-             $arrayReturn[] = $db = array(
-                    "id_region" => $result["id_region"],
-                    "region" => $result["region"]
-                );
-            }
-            //sqlsrv_close($this->conexionDB);
-            return $arrayReturn;
-	}   
-        
+             
         
         
     /*    public function getUsuario($login_username,$login_password) {
@@ -92,7 +62,7 @@ class Modelo {
             return $arrayReturn;
 	} */
         
-        public function getUsuario($login_username,$login_password) {
+      /*  public function getUsuario($login_username,$login_password) {
             $arrayReturn = array();
             $data_source = new DataSource();
             $sql = "select a.id,a.nombres,a.apellidos,b.rol from usuarios a inner join usuarios_roles b on a.id=b.usuario where a.usuario = ? and a.clave= ? and a.estado = 1 ";
@@ -100,16 +70,26 @@ class Modelo {
            $params = array($login_username, $login_password);
             $data_table = $data_source->getConsulta($sql,$params);
             
-            $usuario = null;
+           //// $usuario = null;
+            $usuarios = array();
             
-            if()
-            
+            if(count($data_table) > 0){
+                    foreach ($data_table as $table => $valor) {
+                        $usuarios = new Usuarios();
+                        $usuarios->setId($data_table[$table]["id"]);
+                        $usuarios->setNombres($data_table[$table]["nombres"]);
+                        $usuarios->setApellidos($data_table[$table]["apellidos"]);
+                        $usuarios->setRol($data_table[$table]["rol"]);
+                    }
+            }     
+            echo 'modelo>';
+            print_r($usuarios);////////
             $data_source->closeConn();            
             return $data_table;
-	} 
+	} */
         
         
-        public function getMenu($rol) {
+    /*    public function getMenu($rol) {
             $arrayReturn = array();
             $sql = "select id,nombre,enlace from permisos where rol = ? and estado = 1 ";
             $params = array($rol);
@@ -127,9 +107,9 @@ class Modelo {
             }
          //   sqlsrv_close($this->conexionDB);
             return $arrayReturn;
-	}
+	}*/
         
-        public function getEspecie() {
+       /* public function getEspecie() {
             $arrayReturn = array();
             $sql = "select id,nombre from especie where estado = 1 ";
            
@@ -146,8 +126,8 @@ class Modelo {
             }
          //   sqlsrv_close($this->conexionDB);
             return $arrayReturn;
-	}
-        public function getTipoCalendario($tipo) {
+	}*/
+       /* public function getTipoCalendario($tipo) {
             $arrayReturn = array();
             $sql = "select id,nombre from maestra where estado = 1 and campo = '".$tipo."'";
            
@@ -164,9 +144,9 @@ class Modelo {
             }
          //   sqlsrv_close($this->conexionDB);
             return $arrayReturn;
-	}
+	}*/
         
-        public function getCalendario_Farmaco_Cal($id) {
+       /* public function getCalendario_Farmaco_Cal($id) {
             $arrayReturn = array();
             $sql = "select id,calendario,vacuna from calendario_farmaco where  calendario = '".$id."'";
            
@@ -184,8 +164,8 @@ class Modelo {
             }
          //   sqlsrv_close($this->conexionDB);
             return $arrayReturn;
-	}
-        public function getCalendario_Farmaco($id) {
+	}*/
+       /* public function getCalendario_Farmaco($id) {
             $arrayReturn = array();
             $sql = "select id,calendario,vacuna from calendario_farmaco where  vacuna = '".$id."'";
            
@@ -203,8 +183,8 @@ class Modelo {
             }
          //   sqlsrv_close($this->conexionDB);
             return $arrayReturn;
-	}
-        public function getGrupoFarmaco($especie) {
+	}*/
+       /* public function getGrupoFarmaco($especie) {
             $arrayReturn = array();
             $sql = "select id,nombre from tipo_farmaco where especie like '%".$especie."%' ";
            // $param = array($especie);
@@ -222,9 +202,9 @@ class Modelo {
             }
             //sqlsrv_close($this->conexionDB);
             return $arrayReturn;
-	}
+	}*/
         
-        public function getFarmaco($especie,$GrpoFarmaco) {
+      /*  public function getFarmaco($especie,$GrpoFarmaco) {
             $arrayReturn = array();
             $sql = "select id,nombre from farmaco where tipo_farmaco = ".$GrpoFarmaco."  and especie like '%".$especie."%' ";
             //$param = array($GrpoFarmaco);
@@ -242,43 +222,11 @@ class Modelo {
             }
             //sqlsrv_close($this->conexionDB);
             return $arrayReturn;
-	}
+	}*/
         
-        public function getPauta($inicio,$fin,$id) {
-            $arrayReturn = array();
-            $strPag = " ";
-            if($inicio == '0' && $fin =='0'){
-                $strPag = " ";
-            }else{
-                $strPag = " OFFSET ".$inicio." ROWS FETCH NEXT ".$fin." ROWS ONLY ";
-            }
-            $sql = 
-                " select  ROW_NUMBER ()over(order by a.id ) as num, a.id ,pauta,b.nombre as periodo,c.nombre as tipoPauta ".
-                " from pauta a ".
-                " inner join maestra b on a.periodo=b.id and b.campo = 'cboPeriodo' ".
-                " inner join maestra c on a.tipoPauta=c.id and c.campo = 'cboTipoPauta' ".
-                " where asociar_farmaco = ".$id." order by a.id ".$strPag;
-            //$param = array($GrpoFarmaco);
-            $query = sqlsrv_query( $this->conexionDB, $sql);
-            
-            if($query){
-                //$arrayReturn = $query;
-                while($result = sqlsrv_fetch_array($query, SQLSRV_FETCH_ASSOC)){
-                    // echo $result['nombre'].", ".$result['enlace']."<br />";
-                    $arrayReturn[] = $db = array(
-                        "num" => $result["num"],
-                        "id" => $result["id"],
-                           "pauta" => $result["pauta"],
-                           "periodo" => $result["periodo"],
-                            "tipoPauta" => $result["tipoPauta"]
-                       );
-                }
-            }
-            //sqlsrv_close($this->conexionDB);
-            return $arrayReturn;
-	}
+      
         
-        public function getMaestra($combo) {
+       /* public function getMaestra($combo) {
             $arrayReturn = array();
             $sql = "select id,nombre from maestra where campo = '".$combo."' and estado = 1  ";
             //$param = array($GrpoFarmaco);
@@ -296,9 +244,9 @@ class Modelo {
             }
             //sqlsrv_close($this->conexionDB);
             return $arrayReturn;
-	}
+	}*/
         
-        public function registrarAsociarVacuna  ($cboEspecie, $cboGrpoFarmaco, $cboFarmaco,$cboEdadMinima,$cboEdadMaxima,$cboAplicacion,$cboVolumen,$cboUndMedida,$efectos){
+      /*  public function registrarAsociarVacuna  ($cboEspecie, $cboGrpoFarmaco, $cboFarmaco,$cboEdadMinima,$cboEdadMaxima,$cboAplicacion,$cboVolumen,$cboUndMedida,$efectos){
             
             $sql = "insert into asociar_farmaco (especie,tipo_farmaco,farmaco,edad_minima,edad_maxima,via_aplicacion,volumen,und_medidad,efectos,fechaCreacion,estado) values  (?,?,?,?,?,?,?,?,?,getdate(),1)";
             $params = array($cboEspecie, $cboGrpoFarmaco, $cboFarmaco,$cboEdadMinima,$cboEdadMaxima,$cboAplicacion,$cboVolumen,$cboUndMedida,$efectos);
@@ -306,7 +254,8 @@ class Modelo {
             $query = sqlsrv_query( $this->conexionDB, $sql,$params);
             //sqlsrv_close($this->conexionDB);
         }
-        public function editarAsociarVacuna ($cboEdadMinima,$cboEdadMaxima,$cboAplicacion,$cboVolumen,$cboUndMedida,$efectos,$id){
+        */
+        /*public function editarAsociarVacuna ($cboEdadMinima,$cboEdadMaxima,$cboAplicacion,$cboVolumen,$cboUndMedida,$efectos,$id){
             
             
              $sql = "update asociar_farmaco set edad_minima = ?, edad_maxima = ?,via_aplicacion =?,volumen=?, und_medidad=?, efectos = ?, fechaActualizacion = getdate() where id = ?";
@@ -315,8 +264,8 @@ class Modelo {
            // echo '>>>$sql:'.$sql;
             $query = sqlsrv_query( $this->conexionDB, $sql,$params);
             //sqlsrv_close($this->conexionDB);
-        }
-        public function agregarVacunaCalendario  ($calendario,$farmacoAsociado ){
+        }*/
+        /*public function agregarVacunaCalendario  ($calendario,$farmacoAsociado ){
             
             $sql = "insert into calendario_farmaco (calendario,vacuna,fechaCreacion) values  (?,?,getdate())";
             $params = array($calendario,$farmacoAsociado );
@@ -331,140 +280,31 @@ class Modelo {
            // echo '>>>$sql:'.$sql.'-$calendario:'.$calendario.'-$farmacoAsociado:'.$farmacoAsociado;
             $query = sqlsrv_query( $this->conexionDB, $sql,$params);
             //sqlsrv_close($this->conexionDB);
-        }    
+        }    */
        
             
-        public function  registrarPauta( $id,$txtPauta, $cboPeriodo, $cboTipoPauta){
+     /*   public function  registrarPauta( $id,$txtPauta, $cboPeriodo, $cboTipoPauta){
             
             $sql = "insert into pauta (asociar_farmaco,pauta,periodo,tipoPauta,fechaCreacion,estado) values (?,?,?,?,getdate(),1)";
             $params = array( $id,$txtPauta, $cboPeriodo, $cboTipoPauta);
             $query = sqlsrv_query( $this->conexionDB, $sql,$params);
             //sqlsrv_close($this->conexionDB);
-        }
-        public function  registrarCalendario($txtCalendario, $cboEspecie, $txtFechaInicio,$txtFechaFin,$cboTipoCalendario){
+        }*/
+        
+        /*public function  registrarCalendario($txtCalendario, $cboEspecie, $txtFechaInicio,$txtFechaFin,$cboTipoCalendario){
             
             $sql = "insert into calendario (nombre,especie,fechaInicio,fechaFin,tipoCalendario,fechaCreacion,estado) values (?,?,?,?,?,getdate(),1)";
             $params = array($txtCalendario,$cboEspecie,$txtFechaInicio,$txtFechaFin,$cboTipoCalendario);
             $query = sqlsrv_query( $this->conexionDB, $sql,$params);
             //sqlsrv_close($this->conexionDB);
-        }
+        }*/
         
         
-        public function getCalendario($inicio,$fin){
-           // echo '>>>>>>>>>$inicio:'.$inicio.'$fin:'.$fin;
-            $arrayReturn = array();
-            $strPag = " ";
-            if($inicio == '0' && $fin =='0'){
-                $strPag = " ";
-            }else{
-                $strPag = " OFFSET ".$inicio." ROWS FETCH NEXT ".$fin." ROWS ONLY ";
-            }
-            $sql =
-                " select a.id,a.nombre,b.nombre as especie,CONVERT(VARCHAR(10),fechaInicio,103) as fechaInicio, ".
-                " CONVERT(VARCHAR(10),fechaFin,103) as fechaFin,a.fechaCreacion,d.nombre as tipoCalendario,count(c.id) as vacunas ".
-                " from calendario a ".
-                " left join maestra d on a.tipoCalendario = d.id and d.campo = 'cboTipoCalendario'  ".
-                " inner join especie b on a.especie = b.id ".
-                " left join calendario_farmaco c on c.calendario = a.id ".
-                " where a.estado = 1 ".
-                " group by a.id,a.nombre,b.nombre ,CONVERT(VARCHAR(10),fechaInicio,103) ,CONVERT(VARCHAR(10),fechaFin,103) , a.fechaCreacion,d.nombre ".
-                " order by a.id desc ".$strPag;
-                
-       // echo '>>>> $sql:'.$sql;
-       //     exit();
-           // $params = array($inicio,$fin);
-          // echo '>>$sql: '. $sql;
-            
-            $query = sqlsrv_query( $this->conexionDB, $sql);
-            
-            if($query){
-                //$arrayReturn = $query;
-                while($result = sqlsrv_fetch_array($query, SQLSRV_FETCH_ASSOC)){
-                    // echo $result['nombre'].", ".$result['enlace']."<br />";
-                    $arrayReturn[] = $db = array(
-                           "id" => $result["id"],
-                           "nombre" => $result["nombre"],
-                            "especie" => $result["especie"],
-                           "fechaInicio" => $result["fechaInicio"],
-                            "fechaFin" => $result["fechaFin"],
-                           "fechaCreacion" => $result["fechaCreacion"],
-                           "tipoCalendario" => $result["tipoCalendario"],
-                           "vacunas" => $result["vacunas"]
-                       );
-                }
-            }
-          //  sqlsrv_close($this->conexionDB);
-          //  print_r($arrayReturn);
-            return $arrayReturn;
-        }
         
-        public function getAsociarVacuna($inicio,$fin,$especie,$id){
-           // echo '>>>>>>>>>$inicio:'.$inicio.'$fin:'.$fin;
-            $arrayReturn = array();
-            $strPag = " ";
-            $strEspecie = " ";
-            $strColumnID = " , '0' ";
-            $strJoinID = " ";
-            if($inicio == '0' && $fin =='0'){
-                $strPag = " ";
-            }else{
-                $strPag = " OFFSET ".$inicio." ROWS FETCH NEXT ".$fin." ROWS ONLY ";
-            }
-            if($especie != '0'){
-                $strEspecie = " and a.especie = ".$especie;
-            }
-            if($id != '0'){
-                $strColumnID = ' , count(k.id) ';
-                $strJoinID = ' left join calendario_farmaco k on k.vacuna = a.id and calendario = '.$id;
-            }
-            $sql =
-                    " select a.id,b.nombre as especie, c.nombre as tipo_farmaco, z.nombre as farmaco,  d.nombre as edad_minima ,  e.nombre as edad_maxima  ,  ".
-                    " g.nombre as via_aplicacion , h.nombre as volumen , i.nombre as und_medidad , a.efectos , a.fechaCreacion, count(j.id) as cant_pautas  ".$strColumnID." as flag_agregado".
-                    " from asociar_farmaco a  ".
-                    " inner join especie b on a.especie= b.id  ".
-                    " inner join tipo_farmaco c on a.tipo_farmaco =c.id  ".
-                    " inner join farmaco z on a.farmaco =z.id  ".
-                    " inner join maestra d on a.edad_minima = d.id and d.campo = 'cboEdadMinima'  ".
-                    " inner join maestra e on a.edad_maxima = e.id and e.campo = 'cboEdadMaxima'  ".
-                    " inner join maestra g on a.via_aplicacion = g.id and g.campo = 'cboAplicacion'  ".
-                    " inner join maestra h on a.volumen = h.id and h.campo = 'cboVolumen'  ".
-                    " inner join maestra i on a.und_medidad = i.id and i.campo = 'cboUndMedida' ".
-                    " left join pauta j on a. id = j.asociar_farmaco  ".$strJoinID.
-                    " where a.estado = 1 ".$strEspecie.
-                    " group by a.id,b.nombre , c.nombre ,  d.nombre  ,  e.nombre ,    ".
-                    " g.nombre , h.nombre , i.nombre , a.efectos , a.fechaCreacion ,z.nombre ".
-                    " order by a.id desc ".$strPag;
-          
-           // echo '>>$sql:'.$sql;
-            $query = sqlsrv_query( $this->conexionDB, $sql);
-            
-            if($query){
-                //$arrayReturn = $query;
-                while($result = sqlsrv_fetch_array($query, SQLSRV_FETCH_ASSOC)){
-                    // echo $result['nombre'].", ".$result['enlace']."<br />";
-                    $arrayReturn[] = $db = array(
-                           "id" => $result["id"],
-                            "especie" => $result["especie"],
-                           "tipo_farmaco" => $result["tipo_farmaco"],
-                        "farmaco" => $result["farmaco"],
-                            "edad_minima" => $result["edad_minima"],
-                           "edad_maxima" => $result["edad_maxima"],
-                        "via_aplicacion" => $result["via_aplicacion"],
-                        "volumen" => $result["volumen"],
-                        "und_medidad" => $result["und_medidad"],
-                        "efectos" => $result["efectos"],
-                        "fechaCreacion" => $result["fechaCreacion"],
-                        "cant_pautas" => $result["cant_pautas"],
-                        "flag_agregado" => $result["flag_agregado"]
-                       );
-                }
-            }
-          //  sqlsrv_close($this->conexionDB);
-            //print_r($arrayReturn);
-            return $arrayReturn;
-        }
         
-         public function getCalendarioID($id){
+        
+        
+        /* public function getCalendarioID($id){
           
             $arrayReturn = array();
             $strPag = " ";
@@ -496,9 +336,9 @@ class Modelo {
           //  sqlsrv_close($this->conexionDB);
           //  print_r($arrayReturn);
             return $arrayReturn;
-        }
+        }*/
         
-         public function getVacunaID($id){
+         /*public function getVacunaID($id){
           
             $arrayReturn = array();          
             $sql =
@@ -538,35 +378,35 @@ class Modelo {
           //  sqlsrv_close($this->conexionDB);
           //  print_r($arrayReturn);
             return $arrayReturn;
-        }
+        }*/
         
-        public function actualizaCalendario( $txtFechaInicio,$txtFechaFin,$cboTipoCalendario,$id){
+       /* public function actualizaCalendario( $txtFechaInicio,$txtFechaFin,$cboTipoCalendario,$id){
             $sql = "update calendario set fechaInicio =?,fechaFin=?, fechaActualizacion = getdate() , tipoCalendario = ? where id = ?";
             $params = array($txtFechaInicio,$txtFechaFin,$cboTipoCalendario,$id);
             $query = sqlsrv_query( $this->conexionDB, $sql,$params);
             
-        }
+        }*/
         
-         public function eliminarCalendario($id){
+         /*public function eliminarCalendario($id){
             $sql = "delete from calendario where id = ?";
             $params = array($id);
             $query = sqlsrv_query( $this->conexionDB, $sql,$params);
             
-        }
+        }*/
         
-         public function eliminarPauta($id){
+       /*  public function eliminarPauta($id){
             $sql = "delete from pauta where id = ?";
             $params = array($id);
             $query = sqlsrv_query( $this->conexionDB, $sql,$params);
             
-        }
+        }*/
         
-         public function eliminarVacuna($id){
+        /* public function eliminarVacuna($id){
             $sql = "delete from asociar_farmaco where id = ?";
             $params = array($id);
             $query = sqlsrv_query( $this->conexionDB, $sql,$params);
             
-        }
+        }*/
                 
         //----------------------------------------
 
@@ -909,4 +749,151 @@ class Modelo {
             return $arrayReturn;
 	}           
 */
+        
+          public function getPauta($inicio,$fin,$id) {
+            $arrayReturn = array();
+            $strPag = " ";
+            if($inicio == '0' && $fin =='0'){
+                $strPag = " ";
+            }else{
+                $strPag = " OFFSET ".$inicio." ROWS FETCH NEXT ".$fin." ROWS ONLY ";
+            }
+            $sql = 
+                " select  ROW_NUMBER ()over(order by a.id ) as num, a.id ,pauta,b.nombre as periodo,c.nombre as tipoPauta ".
+                " from GVD_pautas a ".
+                " inner join maestra b on a.periodo=b.id and b.campo = 'cboPeriodo' ".
+                " inner join maestra c on a.tipoPauta=c.id and c.campo = 'cboTipoPauta' ".
+                " where farmaco_especie = ".$id." order by a.id ".$strPag;
+            //$param = array($GrpoFarmaco);
+            $query = sqlsrv_query( $this->conexionDB, $sql);
+            
+            if($query){
+                //$arrayReturn = $query;
+                while($result = sqlsrv_fetch_array($query, SQLSRV_FETCH_ASSOC)){
+                    // echo $result['nombre'].", ".$result['enlace']."<br />";
+                    $arrayReturn[] = $db = array(
+                        "num" => $result["num"],
+                        "id" => $result["id"],
+                           "pauta" => $result["pauta"],
+                           "periodo" => $result["periodo"],
+                            "tipoPauta" => $result["tipoPauta"]
+                       );
+                }
+            }
+            //sqlsrv_close($this->conexionDB);
+            return $arrayReturn;
+	}
+        
+        public function getAsociarVacuna($inicio,$fin,$especie,$id){
+           // echo '>>>>>>>>>$inicio:'.$inicio.'$fin:'.$fin;
+            $arrayReturn = array();
+            $strPag = " ";
+            $strEspecie = " ";
+            $strColumnID = " , '0' ";
+            $strJoinID = " ";
+            if($inicio == '0' && $fin =='0'){
+                $strPag = " ";
+            }else{
+                $strPag = " OFFSET ".$inicio." ROWS FETCH NEXT ".$fin." ROWS ONLY ";
+            }
+            if($especie != '0'){
+                $strEspecie = " and a.especie = ".$especie;
+            }
+            if($id != '0'){
+                $strColumnID = ' , count(k.id) ';
+                $strJoinID = ' left join GVD_calendario_farmaco_especie k on k.farmaco_especie = a.id and calendario = '.$id;
+            }
+            $sql =
+                    " select a.id,b.nombre as especie, c.nombre as tipo_farmaco, z.nombre as farmaco,  d.nombre as edad_minima ,  e.nombre as edad_maxima  ,  ".
+                    " g.nombre as via_aplicacion , h.nombre as volumen , i.nombre as und_medidad , a.efectos , a.fechaCreacion, count(j.id) as cant_pautas  ".$strColumnID." as flag_agregado".
+                    " from GVD_farmaco_especie a  ".
+                    " inner join especies b on a.especie= b.id  ".
+                    " inner join GVD_tipo_farmaco c on a.tipo_farmaco =c.id  ".
+                    " inner join GVD_farmacos z on a.farmaco =z.id  ".
+                    " inner join maestra d on a.edad_minima = d.id and d.campo = 'cboEdadMinima'  ".
+                    " inner join maestra e on a.edad_maxima = e.id and e.campo = 'cboEdadMaxima'  ".
+                    " inner join maestra g on a.via_aplicacion = g.id and g.campo = 'cboAplicacion'  ".
+                    " inner join maestra h on a.volumen = h.id and h.campo = 'cboVolumen'  ".
+                    " inner join maestra i on a.und_medidad = i.id and i.campo = 'cboUndMedida' ".
+                    " left join GVD_pautas j on a. id = j.farmaco_especie  ".$strJoinID.
+                    " where a.estado = 1 ".$strEspecie.
+                    " group by a.id,b.nombre , c.nombre ,  d.nombre  ,  e.nombre ,    ".
+                    " g.nombre , h.nombre , i.nombre , a.efectos , a.fechaCreacion ,z.nombre ".
+                    " order by a.id desc ".$strPag;
+          
+            //echo '>>$sql:'.$sql;
+            $query = sqlsrv_query( $this->conexionDB, $sql);
+            
+            if($query){
+                //$arrayReturn = $query;
+                while($result = sqlsrv_fetch_array($query, SQLSRV_FETCH_ASSOC)){
+                    // echo $result['nombre'].", ".$result['enlace']."<br />";
+                    $arrayReturn[] = $db = array(
+                           "id" => $result["id"],
+                            "especie" => $result["especie"],
+                           "tipo_farmaco" => $result["tipo_farmaco"],
+                        "farmaco" => $result["farmaco"],
+                            "edad_minima" => $result["edad_minima"],
+                           "edad_maxima" => $result["edad_maxima"],
+                        "via_aplicacion" => $result["via_aplicacion"],
+                        "volumen" => $result["volumen"],
+                        "und_medidad" => $result["und_medidad"],
+                        "efectos" => $result["efectos"],
+                        "fechaCreacion" => $result["fechaCreacion"],
+                        "cant_pautas" => $result["cant_pautas"],
+                        "flag_agregado" => $result["flag_agregado"]
+                       );
+                }
+            }
+          //  sqlsrv_close($this->conexionDB);
+            //print_r($arrayReturn);
+            return $arrayReturn;
+        }
+        public function getCalendario($inicio,$fin){
+           // echo '>>>>>>>>>$inicio:'.$inicio.'$fin:'.$fin;
+            $arrayReturn = array();
+            $strPag = " ";
+            if($inicio == '0' && $fin =='0'){
+                $strPag = " ";
+            }else{
+                $strPag = " OFFSET ".$inicio." ROWS FETCH NEXT ".$fin." ROWS ONLY ";
+            }
+            $sql =
+                " select a.id,a.nombre,b.nombre as especie,CONVERT(VARCHAR(10),fechaInicio,103) as fechaInicio, ".
+                " CONVERT(VARCHAR(10),fechaFin,103) as fechaFin,a.fechaCreacion,d.nombre as tipoCalendario,count(c.id) as vacunas ".
+                " from GVD_calendarios a ".
+                " left join maestra d on a.tipoCalendario = d.id and d.campo = 'cboTipoCalendario'  ".
+                " inner join especies b on a.especie = b.id ".
+                " left join GVD_calendario_farmaco_especie c on c.calendario = a.id ".
+                " where a.estado = 1 ".
+                " group by a.id,a.nombre,b.nombre ,CONVERT(VARCHAR(10),fechaInicio,103) ,CONVERT(VARCHAR(10),fechaFin,103) , a.fechaCreacion,d.nombre ".
+                " order by a.id desc ".$strPag;
+                
+       // echo '>>>> $sql:'.$sql;
+       //     exit();
+           // $params = array($inicio,$fin);
+          // echo '>>$sql: '. $sql;
+            
+            $query = sqlsrv_query( $this->conexionDB, $sql);
+            
+            if($query){
+                //$arrayReturn = $query;
+                while($result = sqlsrv_fetch_array($query, SQLSRV_FETCH_ASSOC)){
+                    // echo $result['nombre'].", ".$result['enlace']."<br />";
+                    $arrayReturn[] = $db = array(
+                           "id" => $result["id"],
+                           "nombre" => $result["nombre"],
+                            "especie" => $result["especie"],
+                           "fechaInicio" => $result["fechaInicio"],
+                            "fechaFin" => $result["fechaFin"],
+                           "fechaCreacion" => $result["fechaCreacion"],
+                           "tipoCalendario" => $result["tipoCalendario"],
+                           "vacunas" => $result["vacunas"]
+                       );
+                }
+            }
+          //  sqlsrv_close($this->conexionDB);
+          //  print_r($arrayReturn);
+            return $arrayReturn;
+        }
 } 

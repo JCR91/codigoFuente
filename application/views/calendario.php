@@ -140,7 +140,13 @@
     
  <script type="text/javascript">
 	$(document).ready(function() {
-             
+            var hoy = new Date();
+            var dd = hoy.getDate();
+            var mm = '00'+(hoy.getMonth()+1); //hoy es 0!
+            var yyyy = hoy.getFullYear();
+            
+             alert(mm.substring(0,-2))
+             alert(yyyy+''+mm+''+dd);
              $('#txtCalendario').keyup(function (){
             this.value = (this.value + '').replace(/[^a-zA-ZáéíóúüñÁÉÍÓÚÜÑ0-9-°&/()@ ]/g, '');
             
@@ -165,7 +171,7 @@
                  fin = fin.substring(6,10) + fin.substring(3,5) + fin.substring(0,2)
                 if(ini > fin){
                     
-                    alert('la fecha fin no puede ser meno a la de inicio')
+                    alert('la fecha fin no puede ser menor a la de inicio')
                     $("#txtFechaFin").val('');
                 }
             });
@@ -176,12 +182,13 @@
                var fin = $("#txtFechaFin").val(); 
                  ini = ini.substring(6,10) + ini.substring(3,5) + ini.substring(0,2) 
                  fin = fin.substring(6,10) + fin.substring(3,5) + fin.substring(0,2)
-                if(ini > fin){
-                    
-                    alert('la fecha inicio no puede ser meno a la de inicio')
-                    $("#txtFechaInicio").val('');
-                } 
-               
+               if(fin.length > 0){
+                    if(ini > fin){
+
+                        alert('la fecha inicio no puede ser mayor a la de fin')
+                        $("#txtFechaInicio").val('');
+                    } 
+                }
             });
             
             $("#save").click(function (){
@@ -269,8 +276,8 @@
                                         tbl += "<td>"+value["tipoCalendario"]+"</td>";
                                         tbl += "<td>"+value["vacunas"]+"</td>";
                                         tbl += "<td><a href='#' onclick=findCal('"+value["id"]+"') data-toggle=\"tooltip\" title=\"Editar Calendario\" ><span class=\"glyphicon glyphicon-pencil\" >&nbsp;</span></a>";
-                                        tbl += "<a href='#' onclick=eliminarCal('"+value["id"]+"') ><span class=\"glyphicon glyphicon-trash\" data-toggle=\"tooltip\" title=\"Eliminar Calendario\">&nbsp;</span></a>";
-                                        tbl += "<a href='#' onclick=addVac('"+value["id"]+"')><span class=\"glyphicon glyphicon-circle-arrow-up\" data-toggle=\"tooltip\" title=\"Agregar Vacunas\">&nbsp;</span></a></td>";
+                                        tbl += "<a href='#' onclick=eliminarCal('"+value["id"]+"') ><span style=\"color: black;\" class=\"glyphicon glyphicon-trash\" data-toggle=\"tooltip\" title=\"Eliminar Calendario\">&nbsp;</span></a>";
+                                        tbl += "<a href='#' onclick=addVac('"+value["id"]+"')><span style=\"color: green;\" class=\"glyphicon glyphicon-circle-arrow-up\" data-toggle=\"tooltip\" title=\"Agregar Vacunas\">&nbsp;</span></a></td>";
                                         tbl += "</tr>";
                                       });
                                       tbl +=" </tr></tbody>  ";  

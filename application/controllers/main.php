@@ -1,12 +1,18 @@
-<?php class Main {
+<?php 
+
+
+//include("dao/ICalendario.php");
+//$dao = new ICalendario();
+class Main {
 
 	protected $modelo;
         protected $service;
         protected $upload;
-
+        protected $dao;
 	public function __construct () {
        
             $this->modelo = new Modelo();
+            $this->dao = new CalendarioDAO();
             //$this->upload = new UploadHandler();
            // $this->service = new nusoap_client(WS_PATH, 'wsdl');
 	}
@@ -28,9 +34,10 @@
                     $login_username =  $_POST["login_username"];
                     $login_password =  $_POST["login_password"];
 
-                    $getUsuario = $this->modelo->getUsuario($login_username,$login_password);
-                   
-                    //print_r($getUsuario);
+                   // $getUsuario = $this->modelo->getUsuario($login_username,$login_password);
+                   $getUsuario  = $this->dao->getUsuarios($login_username, $login_password);
+                  //  print_r($getUsuario);
+                    
                     if(count($getUsuario)<1){
                         //Usuario no encontrado
                         // require_once( ROOT . '/application/views/index.php' );
@@ -52,7 +59,8 @@
            // echo '$rol:'.$rol;
           
             // echo '---';
-             $listaMenu = $this->modelo->getMenu($_SESSION["PERSONA_SESSION"]["rol"]);
+            $rol = $_SESSION["PERSONA_SESSION"]["rol"];
+             $listaMenu = $this->dao->getMenu($rol);
             // print_r($listaMenu);
              require_once( ROOT . '/application/views/menu.php' );
          }
@@ -63,8 +71,9 @@
          }
          
          public function calendario() {
-             $listaEspecie = $this->modelo->getEspecie(); 
-             $listaTipoCalendario = $this->modelo->getTipoCalendario('cboTipoCalendario'); 
+             $listaEspecie = $this->dao->getEspecie(); 
+           
+             $listaTipoCalendario = $this->dao->getTipoCalendario('cboTipoCalendario'); 
              
              $_SESSION["ENLACE_SESSION"] = "calendario.php";
              $_SESSION["EPECIE_SESSION"] = $listaEspecie;
@@ -74,7 +83,7 @@
          }
          
          public function asociarvacuna() {
-             $listaEspecie = $this->modelo->getEspecie();
+             $listaEspecie = $this->dao->getEspecie();
             // $listaGrupoFarmaco = $this->modelo->getGrupoFarmaco();
              $_SESSION["ENLACE_SESSION"] = "asociarvacuna.php";
              $_SESSION["EPECIE_SESSION"] = $listaEspecie;
@@ -87,7 +96,7 @@
          public function addvacuna(){
              $id =  $_GET['id'];
              //echo '>>$id: '.$id;
-             $getCalendarioID  = $this->modelo->getCalendarioID($id);
+             $getCalendarioID  = $this->dao->getCalendarioID($id);
              
              $nameCalendario = $getCalendarioID[0]["nombre"];
              $especieCalendario = $getCalendarioID[0]["especie"];
@@ -97,15 +106,15 @@
          public function addpauta(){
              $id =  $_GET['id'];
              //echo '>>$id: '.$id;
-             $getVacunaID  = $this->modelo->getVacunaID($id);
+             $getVacunaID  = $this->dao->getVacunaID($id);
              
              // = $getCalendarioID[0]["nombre"];
              $idVacuna = $getVacunaID[0]["id"];
              $especieVacuna = $getVacunaID[0]["especie"];
              $tipoVacuna = $getVacunaID[0]["des_tipo_farmaco"];
              $farmacoVacuna = $getVacunaID[0]["des_farmaco"];
-             $getPeriodo = $this->modelo->getMaestra('cboPeriodo');
-             $getTipoPauta = $this->modelo->getMaestra('cboTipoPauta');
+             $getPeriodo = $this->dao->getMaestra('cboPeriodo');
+             $getTipoPauta = $this->dao->getMaestra('cboTipoPauta');
               require_once( ROOT . '/application/views/agregarPauta.php' );
          }
 
@@ -117,7 +126,7 @@
              $cboTipoPauta =  $_POST["cboTipoPauta"];
              $id =  $_POST["id"];
               
-             $this->modelo->registrarPauta($id,$txtPauta, $cboPeriodo, $cboTipoPauta);
+             $this->dao->registrarPauta($id,$txtPauta, $cboPeriodo, $cboTipoPauta);
              
             // $getCalendario = $this->modelo->getCalendario();
             // print_r($getCalendario);
@@ -137,7 +146,7 @@
              $txtFechaInicio = substr($txtFechaInicio,6, 4).substr($txtFechaInicio,3, 2).substr($txtFechaInicio,0, 2);
              $txtFechaFin = substr($txtFechaFin,6, 4).substr($txtFechaFin,3, 2).substr($txtFechaFin,0, 2);
  
-             $this->modelo->registrarCalendario($txtCalendario, $cboEspecie, $txtFechaInicio,$txtFechaFin,$cboTipoCalendario);
+             $this->dao->registrarCalendario($txtCalendario, $cboEspecie, $txtFechaInicio,$txtFechaFin,$cboTipoCalendario);
              
             // $getCalendario = $this->modelo->getCalendario();
             // print_r($getCalendario);
@@ -159,7 +168,7 @@
              $efectos =  $_POST["efectos"];
           
              
-             $this->modelo->registrarAsociarVacuna($cboEspecie, $cboGrpoFarmaco, $cboFarmaco,$cboEdadMinima,$cboEdadMaxima,$cboAplicacion,$cboVolumen,$cboUndMedida,$efectos);
+             $this->dao->registrarAsociarVacuna($cboEspecie, $cboGrpoFarmaco, $cboFarmaco,$cboEdadMinima,$cboEdadMaxima,$cboAplicacion,$cboVolumen,$cboUndMedida,$efectos);
              
             // $getCalendario = $this->modelo->getCalendario();
             // print_r($getCalendario);
@@ -181,7 +190,7 @@
              $efectos =  $_POST["efectos"];
              $id =  $_POST["idHidden"];
              
-             $this->modelo->editarAsociarVacuna( $cboEdadMinima,$cboEdadMaxima,$cboAplicacion,$cboVolumen,$cboUndMedida,$efectos,$id);
+             $this->dao->editarAsociarVacuna( $cboEdadMinima,$cboEdadMaxima,$cboAplicacion,$cboVolumen,$cboUndMedida,$efectos,$id);
              
             // $getCalendario = $this->modelo->getCalendario();
             // print_r($getCalendario);
@@ -225,10 +234,11 @@
              $id =  $_POST["id"];
              $especie = '0';
              if($id != '0'){
-                $getCalendarioID  = $this->modelo->getCalendarioID($id);
+                $getCalendarioID  = $this->dao->getCalendarioID($id);
                 $especie = $getCalendarioID[0]["especie"];
                 
              }
+             //echo '>>>>$especie: '.$especie;
            //  echo '$inicio:'. $inicio.'-'.$fin;
              $getCalendario = $this->modelo->getAsociarVacuna($inicio,$fin,$especie,$id);
              $getCalendarioTT = $this->modelo->getAsociarVacuna('0','0',$especie,$id);
@@ -241,13 +251,13 @@
          
          public function busquedaCalendario(){
              $id =  $_POST["id"];
-             $getCalendarioID  = $this->modelo->getCalendarioID($id);
+             $getCalendarioID  = $this->dao->getCalendarioID($id);
              echo json_encode($getCalendarioID);
          }
          
          public function busquedaVacuna(){
              $id =  $_POST["id"];
-             $getVacunaID  = $this->modelo->getVacunaID($id);
+             $getVacunaID  = $this->dao->getVacunaID($id);
              
              echo json_encode($getVacunaID);
          }
@@ -256,7 +266,7 @@
              $farmacoAsociado =  $_POST["farmacoAsociado"];
              $calendario      =  $_POST["calendario"];
              
-             $this->modelo->agregarVacunaCalendario($calendario,$farmacoAsociado);
+             $this->dao->agregarVacunaCalendario($calendario,$farmacoAsociado);
              
              $setMensaje = '1';
              echo json_encode($setMensaje);
@@ -266,7 +276,7 @@
              $farmacoAsociado =  $_POST["farmacoAsociado"];
              $calendario      =  $_POST["calendario"];
              
-             $this->modelo->eliminarVacunaCalendario($calendario,$farmacoAsociado);
+             $this->dao->eliminarVacunaCalendario($calendario,$farmacoAsociado);
              
              $setMensaje = '1';
              echo json_encode($setMensaje);
@@ -277,7 +287,7 @@
 
          public function busquedaGrupoFarmaco() {
              $especie =  $_POST["especie"];
-             $getGrupoFarmacoEspecie  = $this->modelo->getGrupoFarmaco($especie);
+             $getGrupoFarmacoEspecie  = $this->dao->getGrupoFarmaco($especie);
              //print_r($getGrupoFarmacoEspecie);
              echo json_encode($getGrupoFarmacoEspecie);
          }
@@ -285,17 +295,17 @@
          public function busquedaFarmaco() {
              $especie =  $_POST["especie"];
              $GrpoFarmaco =  $_POST["GrpoFarmaco"];
-             $getFarmacoEspecie  = $this->modelo->getFarmaco($especie,$GrpoFarmaco);
+             $getFarmacoEspecie  = $this->dao->getFarmaco($especie,$GrpoFarmaco);
              //print_r($getGrupoFarmacoEspecie);
              echo json_encode($getFarmacoEspecie);
          }
          public function busquedaMaestra() {
             
-             $getEdadMinima = $this->modelo->getMaestra('cboEdadMinima');
-             $getEdadMaxima = $this->modelo->getMaestra('cboEdadMaxima');
-             $getAplicacion = $this->modelo->getMaestra('cboAplicacion');
-             $getVolumen = $this->modelo->getMaestra('cboVolumen');
-             $getUndMedida = $this->modelo->getMaestra('cboUndMedida');
+             $getEdadMinima = $this->dao->getMaestra('cboEdadMinima');
+             $getEdadMaxima = $this->dao->getMaestra('cboEdadMaxima');
+             $getAplicacion = $this->dao->getMaestra('cboAplicacion');
+             $getVolumen = $this->dao->getMaestra('cboVolumen');
+             $getUndMedida = $this->dao->getMaestra('cboUndMedida');
              //print_r($getGrupoFarmacoEspecie);
              
              $ArryEdadMinima =  array('EdadMinima' => $getEdadMinima);
@@ -319,7 +329,7 @@
              $txtFechaInicio = substr($txtFechaInicio,6, 4).substr($txtFechaInicio,3, 2).substr($txtFechaInicio,0, 2);
              $txtFechaFin = substr($txtFechaFin,6, 4).substr($txtFechaFin,3, 2).substr($txtFechaFin,0, 2);
              
-             $this->modelo->actualizaCalendario( $txtFechaInicio,$txtFechaFin,$cboTipoCalendario,$id);
+             $this->dao->actualizaCalendario( $txtFechaInicio,$txtFechaFin,$cboTipoCalendario,$id);
              
              $setMensaje = '1';
              echo json_encode($setMensaje);
@@ -330,12 +340,12 @@
               
              
              
-             $consultaCalendario_Farmaco = $this->modelo->getCalendario_Farmaco_Cal($id);
+             $consultaCalendario_Farmaco = $this->dao->getCalendario_Farmaco_Cal($id);
               if(count($consultaCalendario_Farmaco) >= 1){
                   $setMensaje = '2';
                   echo json_encode($setMensaje);
               }else{
-                  $this->modelo->eliminarCalendario($id);
+                  $this->dao->eliminarCalendario($id);
                   $setMensaje = '1';
                   echo json_encode($setMensaje);
               }
@@ -345,7 +355,7 @@
           public function eliminarPauta(){
               $id =  $_POST["id"];
               
-              $this->modelo->eliminarPauta($id);
+              $this->dao->eliminarPauta($id);
              
              $setMensaje = '1';
              echo json_encode($setMensaje);
@@ -356,12 +366,12 @@
            public function eliminarVacuna(){
               $id =  $_POST["id"];
               
-              $consultaCalendario_Farmaco = $this->modelo->getCalendario_Farmaco($id);
+              $consultaCalendario_Farmaco = $this->dao->getPauta_Farmaco_Especie($id);
               if(count($consultaCalendario_Farmaco) >= 1){
                   $setMensaje = '2';
                   echo json_encode($setMensaje);
               }else{
-                  $this->modelo->eliminarVacuna($id);
+                  $this->dao->eliminarVacuna($id);
                   $setMensaje = '1';
                   echo json_encode($setMensaje);
               }

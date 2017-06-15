@@ -106,10 +106,10 @@ function loadClass() {
 	require_once (ROOT . DS . 'application/controllers/main.php');
         //require_once (ROOT . DS . 'application/controllers/registro.php');
         
-        require_once (ROOT . DS . 'application/bean/Usuarios.php');
-    
+        //require_once (ROOT . DS . 'application/bean/Usuarios.php');
+        require_once (ROOT . DS . 'application/models/sql/CalendarioDAO.php');
         
-        
+
         /*** ADMIN ***/
    /*    require_once (ROOT . DS . 'administrador/bean/Denuncia.php');
         require_once (ROOT . DS . 'administrador/bean/Notificacion.php');

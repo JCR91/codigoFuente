@@ -163,9 +163,9 @@ function listaAsociarVacuna(inicio,fin,id){
                                         tbl += "<td>"+value["cant_pautas"]+"</td><td>";
                                         
                                         if(value["flag_agregado"] == '0' ){
-                                            tbl += "<a href='#' onclick=agregar('"+value["id"]+"','<?php echo $id;?>') data-toggle=\"tooltip\" title=\"Agregar\" ><span class=\"glyphicon glyphicon-ok-sign\" >&nbsp;</span></a>";
+                                            tbl += "<a href='#' onclick=agregar('"+value["id"]+"','<?php echo $id;?>') data-toggle=\"tooltip\" title=\"Agregar\" ><span style=\"color: green;padding-left: 35px;\" class=\"glyphicon glyphicon-ok-sign\" >&nbsp;</span></a>";
                                         }else{
-                                            tbl += "<a href='#' onclick=quitar('"+value["id"]+"','<?php echo $id;?>') ><span class=\"glyphicon glyphicon-remove-sign\" data-toggle=\"tooltip\" title=\"Quitar\">&nbsp;</span></a>";
+                                            tbl += "<a href='#' onclick=quitar('"+value["id"]+"','<?php echo $id;?>') ><span style=\"color: red;padding-left: 35px;\" class=\"glyphicon glyphicon-remove-sign\" data-toggle=\"tooltip\" title=\"Quitar\">&nbsp;</span></a>";
                                         }
                                         tbl += "</td></tr>";
                                       });

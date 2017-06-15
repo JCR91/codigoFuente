@@ -56,7 +56,7 @@
                                 <div class="form-group">
                                   <label class="sr-only" for="txtCod_Mod"></label>
                                   <div class="input-group">
-                                    <div class="input-group-addon">Grupo Farmaco:<font size="2" color="red"> </font></div>
+                                    <div class="input-group-addon">Grupo Fármaco:<font size="2" color="red"> </font></div>
                                         <select required="" disabled="disabled" class="form-control" name="cboGrpoFarmaco" id="cboGrpoFarmaco">
                                             <option value="0">Seleccione</option>
                                         </select>
@@ -67,7 +67,7 @@
                                 <div class="form-group">
                                   <label class="sr-only" for="txtCod_Mod"></label>
                                   <div class="input-group">
-                                    <div class="input-group-addon">Farmaco:<font size="2" color="red"> </font></div>
+                                    <div class="input-group-addon">Fármaco:<font size="2" color="red"> </font></div>
                                         <select required="" disabled="disabled" class="form-control" name="cboFarmaco" id="cboFarmaco">
                                             <option value="0">Seleccione</option>
                                         </select>
@@ -110,7 +110,7 @@
                                 <div class="form-group">
                                     <label class="sr-only" for="txtCod_Mod"></label>
                                     <div class="input-group">
-                                        <div class="input-group-addon">Periodo:<font size="2" color="red"></font></div>                                   
+                                        <div class="input-group-addon">Período:<font size="2" color="red"></font></div>                                   
                                         <select  class="form-control" name="cboPeriodo" id="cboPeriodo">
                                             <option value="0">Seleccione</option>
                                                <?php
@@ -161,7 +161,7 @@
                                 <tbody><tr>
                         <th>N° Dosis </th>
                         <th>Pauta</th>
-                        <th>Periodo</th>
+                        <th>Período</th>
                         <th>Tipo de Pauta</th>
                         <th>Opciones</th>
                         </tr></tbody>
@@ -246,7 +246,7 @@
                                        tbl +=" <tbody><tr>";
                                        tbl +=" <th>N° Dosis</th>";
                                        tbl +=" <th>Pauta</th>";
-                                       tbl +=" <th>Periodo</th>";
+                                       tbl +=" <th>Período</th>";
                                        tbl +=" <th>Tipo de Pauta</th>";
                                        tbl +="<th>Opciones</th>";
                                        

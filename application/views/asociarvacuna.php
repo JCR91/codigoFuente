@@ -2,7 +2,7 @@
     <div class="box">
       <div class="contenido-ficha">
                             <section>
-                            <h1 class="text-center">Asociar Vacuna / Desparasitador</h1>
+                            <h1 class="text-center">Crear indicaciones de vacuna / desparasitador</h1>
                             <br><br>
                          <form id="frmAsociarVacuna" action="main/formcalendario2" method="POST" >  
                               <input type="hidden" id="idHidden" name="idHidden" value="0"/>
@@ -27,7 +27,7 @@
                                 <div class="form-group">
                                   <label class="sr-only" for="txtCod_Mod"></label>
                                   <div class="input-group">
-                                    <div class="input-group-addon">Grupo Farmaco:<font size="2" color="red"> </font></div>
+                                    <div class="input-group-addon">Grupo Fármaco:<font size="2" color="red"> </font></div>
                                         <select required="" class="form-control" name="cboGrpoFarmaco" id="cboGrpoFarmaco">
                                             <option value="0">Seleccione</option>
                                         </select>
@@ -40,7 +40,7 @@
                                 <div class="form-group">
                                   <label class="sr-only" for="txtCod_Mod"></label>
                                   <div class="input-group">
-                                    <div class="input-group-addon">Farmaco:<font size="2" color="red"> </font></div>
+                                    <div class="input-group-addon">Fármaco:<font size="2" color="red"> </font></div>
                                         <select required="" class="form-control" name="cboFarmaco" id="cboFarmaco">
                                             <option value="0">Seleccione</option>
                                         </select>
@@ -53,7 +53,7 @@
                                 <div class="form-group">
                                     <label class="sr-only" for="txtCod_Mod"></label>
                                     <div class="input-group">
-                                        <div class="input-group-addon">Edad Minima:<font size="2" color="red"></font></div>                                   
+                                        <div class="input-group-addon">Edad Mínima:<font size="2" color="red"></font></div>                                   
                                         <select required="" class="form-control" name="cboEdadMinima" id="cboEdadMinima">
                                             <option value="0">Selecciene</option>
                                         </select>
@@ -66,7 +66,7 @@
                                 <div class="form-group">
                                     <label class="sr-only" for="txtCod_Mod"></label>
                                     <div class="input-group">
-                                        <div class="input-group-addon">Edad Maxima:<font size="2" color="red"></font></div>                                   
+                                        <div class="input-group-addon">Edad Máxima:<font size="2" color="red"></font></div>                                   
                                         <select required="" class="form-control" name="cboEdadMaxima" id="cboEdadMaxima">
                                             <option value="0">Selecciene</option>
                                         </select>
@@ -80,7 +80,7 @@
                                 <div class="form-group">
                                     <label class="sr-only" for="txtCod_Mod"></label>
                                     <div class="input-group">
-                                        <div class="input-group-addon">Via de Aplicacion:<font size="2" color="red"></font></div>                                   
+                                        <div class="input-group-addon">Via de Aplicación:<font size="2" color="red"></font></div>                                   
                                         <select required="" class="form-control" name="cboAplicacion" id="cboAplicacion">
                                             <option value="0">Selecciene</option>
                                         </select>
@@ -118,7 +118,7 @@
                                 <div class="form-group">
                                     <label class="sr-only" for="txtCod_Mod"></label>
                                     <div class="input-group">
-                                        <div class="input-group-addon">Efectos:<font size="2" color="red"></font></div>                                   
+                                        <div class="input-group-addon">Efectos Secundarios:<font size="2" color="red"></font></div>                                   
                                         <textarea class="form-control"maxlength="150" rows="5" name="efectos" id="efectos"></textarea>
                                     </div>
                                 </div>
@@ -129,7 +129,7 @@
 
           <div class="row" id="crearCal">
             <div class="col-md-6">
-              <input type="button" class="btn btn-danger" id="save" name="save" value="Asociar"/>
+              <input type="button" class="btn btn-danger" id="save" name="save" value="Crear"/>
             </div>
               
           </div>
@@ -153,10 +153,10 @@
                             <table id="tblFarmaco" class="table table-striped">
                                 <tbody><tr>
                         <th>Especie</th>
-                        <th>Grupo Farmaco</th>
-                        <th>Farmaco</th>
-                        <th>Edad Minima</th>
-                        <th>Edad Maxima</th>
+                        <th>Grupo Fármaco</th>
+                        <th>Fármaco</th>
+                        <th>Edad Mínima</th>
+                        <th>Edad Máxima</th>
                         <th>Vía Aplicación</th>
                         <th>Volumen</th>
                         <th>Und. Medida</th>
@@ -264,7 +264,7 @@ function eliminarVac(id){
                                         alert('Registro eliminado satisfactoriamente');
                                         listaAsociarVacuna(0,10);
                                     }else{
-                                        alert('No puede eliminar el registro, debido a que se encuentra asignado a un Calendario');
+                                        alert('No puede eliminar el registro, debido a que se encuentran asignadas pautas ');
                                     }
                                         
                                     }
@@ -500,10 +500,10 @@ function listaAsociarVacuna(inicio,fin,id){
                                     
                                         tbl +=" <tbody><tr>";
                                         tbl +="<th>Especie</th>";
-                                        tbl +="<th>Grupo Farmaco</th>";
-                                        tbl +="<th>Farmaco</th>";
-                                        tbl +="<th>Edad Minima</th>";
-                                        tbl +="<th>Edad Maxima</th>";
+                                        tbl +="<th>Grupo Fármaco</th>";
+                                        tbl +="<th>Fármaco</th>";
+                                        tbl +="<th>Edad Mínima</th>";
+                                        tbl +="<th>Edad Máxima</th>";
                                         tbl +="<th>Vía Aplicación</th>";
                                         tbl +="<th>Volumen</th>";
                                         tbl +="<th>Und. Medida</th>";
@@ -524,8 +524,8 @@ function listaAsociarVacuna(inicio,fin,id){
                                         tbl += "<td>"+value["efectos"]+"</td>";
                                         tbl += "<td>"+value["cant_pautas"]+"</td>";
                                         tbl += "<td><a href='#' onclick=findVac('"+value["id"]+"') data-toggle=\"tooltip\" title=\"Editar\" ><span class=\"glyphicon glyphicon-pencil\" >&nbsp;</span></a>";
-                                        tbl += "<a href='#' onclick=eliminarVac('"+value["id"]+"') ><span class=\"glyphicon glyphicon-trash\" data-toggle=\"tooltip\" title=\"Eliminar\">&nbsp;</span></a>";
-                                        tbl += "<a href='#' onclick=addPau('"+value["id"]+"')><span class=\"glyphicon glyphicon-circle-arrow-up\" data-toggle=\"tooltip\" title=\"Agregar pauta\"></span></a></td>";
+                                        tbl += "<a href='#' onclick=eliminarVac('"+value["id"]+"') ><span style=\"color: black;\" class=\"glyphicon glyphicon-trash\" data-toggle=\"tooltip\" title=\"Eliminar\">&nbsp;</span></a>";
+                                        tbl += "<a href='#' onclick=addPau('"+value["id"]+"')><span style=\"color: green;\" class=\"glyphicon glyphicon-circle-arrow-up\" data-toggle=\"tooltip\" title=\"Agregar pauta\"></span></a></td>";
                                         tbl += "</tr>";
                                       
                                       });
